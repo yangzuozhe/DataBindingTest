@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    >
+<!--     xmlns:bind="http://schemas.android.com/apk/res-auto"
+        要写这句话才可以使用bind
+-->
+    <data>
+        <import type="android.view.View"/>
+        <!-- 这样子就解决了在xml中无法引用同名的类，可以对自己的类进行重命名关键子alias=xxxx-->
+        <variable
+            name="vista"
+            type="com.example.databindingtest.View" />
+        <variable   
+            name="user"
+            type="com.example.databindingtest.User" />
+
+        <variable
+            name="viewModel"
+            type="com.example.databindingtest.MyViewModel" />
+
+        <variable
+            name="mainActivity"
+            type="com.example.databindingtest.MainActivity" />
+
+
+        <import type="android.util.SparseArray"/>
+        <import type="java.util.Map"/>
+        <!--        首先要引入List类-->
+        <import type="java.util.List"/>
+<!-- 然后我们给List定义名称 -->
+<!--        在这里要注意喔，看这里的type;
+这里的List&lt就是集合的类型List，这里的String&gt;就是集合里的泛型String，这要和后面的java代码中的泛型是一样的否则会报错-->
+        <variable
+            name="list"
+            type="List&lt;String&gt;" />
+<!--  这里是定义取第几个集合的索引值，这个值的数据类型是int-->
+        <variable
+            name="index"
+            type="int" />
+
+
+        <variable
+            name="user2"
+            type="com.example.databindingtest.User2" />
+        <variable
+            name="user2list"
+            type="androidx.databinding.ObservableArrayList&lt;String&gt;" />
+
+        <variable
+            name="photo"
+            type="com.example.databindingtest.Photo" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+    <!-- 这里将对象user传入name_activity.xml文件中，然后要注意，user在name_activity.xml中一样要定义，然后就可以发现，本xml的数据发生变化，
+    我们用include包含的xml文件里的ui同样也会发生变化-->
+        <include
+            layout="@layout/name_activity"
+            bind:user="@{user}"
+            />
+        <Button
+            android:id="@+id/my_tv1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{user.firstName,default=my_default}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="@{viewModel::changData}"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+         />
+        <EditText
+            android:id="@+id/my_ed1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@={user.firstName,default=my_default_ed}"
+            app:layout_constraintTop_toBottomOf="@id/my_tv1"
+            android:visibility="@{user.isAdult? View.VISIBLE:View.GONE}"
+            />
+        <Button
+            android:id="@+id/my_bt2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/my_ed1"
+            android:gravity="center"
+            android:text="@{user2list[0]}"
+            android:onClick="@{mainActivity::changDataUser2List}"
+            />
+        <ImageView
+            android:id="@+id/myImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/my_bt2"
+            app:imageUrl="@{photo.photo}"
+            />
+
+<!--    最后我们用在这里，对集合的数据进行取值    -->
+        <fragment
+            android:id="@+id/my_fg1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.example.databindingtest.MyFragment"
+            app:layout_constraintTop_toBottomOf="@+id/myImageView"
+            />
+<!-- android:visibility="@{user.isAdult? View.VISIBLE:View.GONE}-->
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
